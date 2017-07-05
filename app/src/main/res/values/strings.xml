@@ -4,6 +4,7 @@
     <string name="eur_text">EUR</string>
     <string name="uan_text">UAN</string>
     <string name="null_text">00</string>
+    <string name="button_text">Go</string>
 
     <string-array name="currency">
         <item>USD</item>

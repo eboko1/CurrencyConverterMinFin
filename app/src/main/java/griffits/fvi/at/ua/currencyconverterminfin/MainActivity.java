@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -108,37 +109,45 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String[] strings) {
-           if (index_arrayCurrencyData == 0){
-               double usdToEurValue, usdToRubValue, usdToUsdValue, usdToEurUan, usdToUan, usdToUanValue;
+            double usdValue, eurValue;
+            usdValue = Double.parseDouble(results[0]);
+            eurValue = Double.parseDouble(results[1]);
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
+            if (usdValue == 0 && eurValue == 0){
+                Toast.makeText(getApplicationContext(), "data update", Toast.LENGTH_SHORT).show();
+            }else if (index_arrayCurrencyData == 0){
                // USD to USD
-               usdToUsdValue = inputValue * 1;
-               usd.setText(""+usdToUsdValue);
+               usd.setText(""+(inputValue * 1));
                 // USD to UAN
-               usdToUanValue = Double.parseDouble(results[0]);
-               usdToUan = inputValue * usdToUanValue;
-               uan.setText(""+usdToUan);
+               uan.setText(""+(inputValue * usdValue));
                // USD to EUR
-               DecimalFormat decimalFormat = new DecimalFormat("0.00");
-               usdToEurValue = Double.parseDouble(results[1]);
-               usdToEurUan = (usdToUanValue/usdToEurValue)*inputValue;
-               eur.setText(""+decimalFormat.format(usdToEurUan));
+               eur.setText(""+decimalFormat.format((usdValue/eurValue)*inputValue));
 
            } else if (index_arrayCurrencyData == 1){
-
+               // EUR to USD
+               usd.setText(""+(decimalFormat.format(eurValue/usdValue)));
+               // EUR to EUR
+                eur.setText(""+(inputValue*1));
+               // EUR to UAN
+               uan.setText(""+(eurValue*inputValue));
            } else if (index_arrayCurrencyData == 2){
-
+                //UAN to USD
+                usd.setText(""+(decimalFormat.format(inputValue/usdValue)));
+                //UAN to EUR
+                eur.setText(""+(decimalFormat.format(inputValue/eurValue)));
+                //UAN to UAN
+                uan.setText(""+(inputValue*1));
            }
-            Log.d(LOG_DEBUG, "start method  onPostExecute");
+            Log.d(LOG_DEBUG, "finish method  onPostExecute");
         }
 
         @Override
         protected String[] doInBackground(String... params) {
             Log.d(LOG_DEBUG, "start method  doInBackground");
-            if (index_arrayCurrencyData == 0){
                 String uRl;
                 try {
-                    uRl = getJson("http://api.minfin.com.ua/summary/b03af6a10c910fb83692634f77f046021a210bcf");
+                    uRl = getJson("http://api.minfin.com.ua/nbu/b03af6a10c910fb83692634f77f046021a210bcf");
 
                     JSONObject jsonObject = new JSONObject(uRl);
 
@@ -153,14 +162,11 @@ public class MainActivity extends Activity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if (index_arrayCurrencyData == 1){
 
-            } else if(index_arrayCurrencyData == 2){
-
-            }
             return results;
         }
     }
+
 
     public String getJson(String url) throws ClientProtocolException,IOException {
         StringBuilder builder = new StringBuilder();
