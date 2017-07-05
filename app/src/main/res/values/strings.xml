@@ -2,11 +2,12 @@
     <string name="app_name">CurrencyConverterMinFin</string>
     <string name="usd_text">USD</string>
     <string name="eur_text">EUR</string>
-    <string name="rub_text">RUB</string>
+    <string name="uan_text">UAN</string>
     <string name="null_text">00</string>
+
     <string-array name="currency">
         <item>USD</item>
         <item>EUR</item>
-        <item>RUB</item>
+        <item>UAN</item>
     </string-array>
 </resources>

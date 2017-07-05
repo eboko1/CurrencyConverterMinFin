@@ -95,7 +95,7 @@
         android:layout_alignBottom="@+id/frn_tv"
         android:layout_alignLeft="@+id/textView5"
         android:layout_alignStart="@+id/textView5"
-        android:text="@string/rub_text" />
+        android:text="@string/uan_text" />
 
 
 </RelativeLayout>
