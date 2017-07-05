@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="griffits.fvi.at.ua.currencyconverterminfin.MainActivity">
+
+    <EditText
+        android:id="@+id/enter_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="enter number"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="36dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="93dp" />
+
+    <Spinner
+        android:id="@+id/spinner_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_converter"
+        android:layout_alignLeft="@+id/usd_tv"
+        android:layout_alignStart="@+id/usd_tv" >
+        </Spinner>
+
+
+
+    <Button
+        android:id="@+id/button_converter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enter_number"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text="Converter"
+        android:onClick="btnConverter"/>
+
+    <TextView
+        android:id="@+id/usd_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_converter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp"
+        android:text="@string/null_text" />
+
+    <TextView
+        android:id="@+id/eur_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/usd_tv"
+        android:layout_alignStart="@+id/usd_tv"
+        android:layout_below="@+id/usd_tv"
+        android:layout_marginTop="34dp"
+        android:text="@string/null_text" />
+
+    <TextView
+        android:id="@+id/frn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eur_tv"
+        android:layout_alignStart="@+id/eur_tv"
+        android:layout_below="@+id/eur_tv"
+        android:layout_marginTop="35dp"
+        android:text="@string/null_text" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/usd_tv"
+        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp"
+        android:layout_toEndOf="@+id/button_converter"
+        android:layout_toRightOf="@+id/button_converter"
+        android:text="@string/usd_text" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/frn_tv"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_alignStart="@+id/textView4"
+        android:text="@string/eur_text" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/frn_tv"
+        android:layout_alignLeft="@+id/textView5"
+        android:layout_alignStart="@+id/textView5"
+        android:text="@string/rub_text" />
+
+
+</RelativeLayout>
