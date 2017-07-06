@@ -6,18 +6,25 @@
     android:layout_height="match_parent"
     tools:context="griffits.fvi.at.ua.currencyconverterminfin.MainActivity">
 
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="horizontal"
+    android:background="@drawable/logo"
+    android:id="@+id/linearLayout" />
+
     <EditText
         android:id="@+id/enter_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="enter number"
         android:inputType="number"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_below="@+id/linearLayout"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="36dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="93dp" />
+        android:layout_alignParentStart="true" />
 
 
     <Button
@@ -29,25 +36,24 @@
         android:background="@color/colorPrimary"
         android:textColor="@color/colorWhite"
         android:textStyle=""
-        android:layout_marginLeft="34dp"
-        android:layout_marginStart="34dp"
-        android:layout_alignBottom="@+id/spinner_currency"
-        android:layout_toRightOf="@+id/spinner_currency"
-        android:layout_toEndOf="@+id/spinner_currency" />
+        android:layout_alignTop="@+id/enter_number"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="32dp"
+        android:layout_marginEnd="32dp" />
 
     <TextView
         android:id="@+id/usd_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="49dp"
         android:textSize="20sp"
         android:textColor="@color/colorGreen"
         android:text="@string/null_text"
-        android:layout_below="@+id/button_converter"
-        android:layout_alignLeft="@+id/enter_number"
-        android:layout_alignStart="@+id/enter_number"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp" />
+        android:layout_alignTop="@+id/textView4"
+        android:layout_toLeftOf="@+id/spinner_currency"
+        android:layout_toStartOf="@+id/spinner_currency"
+        android:layout_marginRight="17dp"
+        android:layout_marginEnd="17dp" />
 
     <TextView
         android:id="@+id/eur_tv"
@@ -81,9 +87,10 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/colorGreen"
-        android:layout_alignBaseline="@+id/usd_tv"
-        android:layout_alignBottom="@+id/usd_tv"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/button_converter"
+        android:layout_alignLeft="@+id/enter_number"
+        android:layout_alignStart="@+id/enter_number"
+        android:layout_marginTop="17dp" />
 
     <TextView
         android:id="@+id/textView5"
@@ -115,8 +122,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/enter_number"
-        android:layout_alignLeft="@+id/textView4"
-        android:layout_alignStart="@+id/textView4"></Spinner>
+        android:layout_toRightOf="@+id/enter_number"
+        android:layout_toEndOf="@+id/enter_number"
+        android:layout_marginLeft="22dp"
+        android:layout_marginStart="22dp"></Spinner>
 
 
 </RelativeLayout>

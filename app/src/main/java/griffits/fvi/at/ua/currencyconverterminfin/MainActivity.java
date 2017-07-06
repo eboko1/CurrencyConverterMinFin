@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,7 +127,7 @@ public class MainActivity extends Activity {
 
            } else if (index_arrayCurrencyData == 1){
                // EUR to USD
-               usd.setText(""+(decimalFormat.format(eurValue/usdValue)));
+                usd.setText(""+decimalFormat.format((eurValue/usdValue)*inputValue));
                // EUR to EUR
                 eur.setText(""+(inputValue*1));
                // EUR to UAN
