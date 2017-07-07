@@ -141,11 +141,16 @@ public class MainActivity extends Activity {
 
            } else if (index_arrayCurrencyData == 1){
                // EUR to USD
+                //ask
                 usdAsk.setText(""+decimalFormat.format((eurValue/usdValue)*inputValue));
+                // bid
+                usdBid.setText(""+decimalFormat.format((eurBidValue/usdBidValue)*inputValue));
                // EUR to EUR
                 eurAsk.setText(""+(inputValue*1));
+                eurBid.setText(""+(inputValue*1));
                // EUR to UAN
                uanAsk.setText(""+(eurValue*inputValue));
+               uanBid.setText(""+(eurBidValue*inputValue));
            } else if (index_arrayCurrencyData == 2){
                 //UAN to USD
                 usdAsk.setText(""+(decimalFormat.format(inputValue/usdValue)));
@@ -153,6 +158,7 @@ public class MainActivity extends Activity {
                 eurAsk.setText(""+(decimalFormat.format(inputValue/eurValue)));
                 //UAN to UAN
                 uanAsk.setText(""+(inputValue*1));
+                uanBid.setText(""+(inputValue*1));
            }
             Log.d(LOG_DEBUG, "finish method  onPostExecute");
         }
