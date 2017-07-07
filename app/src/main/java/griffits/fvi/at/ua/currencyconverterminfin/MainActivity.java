@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
 
 public class MainActivity extends Activity {
     private static final String LOG_DEBUG = "MainActivity" ;
-    private TextView usd, eur, uan;
+    private TextView usdAsk, eurAsk, uanAsk, usdBid, eurBid,uanBid;
     private Button converter;
     private EditText enter_et;
     private Spinner spinner_currency;
@@ -53,9 +53,14 @@ public class MainActivity extends Activity {
     }
 
     private void init(){
-        usd = (TextView)findViewById(R.id.usd_tv);
-        eur = (TextView)findViewById(R.id.eur_tv);
-        uan = (TextView)findViewById(R.id.frn_tv);
+        usdAsk = (TextView)findViewById(R.id.usd_ask_tv);
+        eurAsk = (TextView)findViewById(R.id.eur_ask_tv);
+        uanAsk = (TextView)findViewById(R.id.uan_ask_tv);
+
+        usdBid =(TextView)findViewById(R.id.usd_bid_tv);
+        eurBid =(TextView)findViewById(R.id.eur_bid_tv);
+        uanBid =(TextView)findViewById(R.id.uan_bid_tv);
+
         converter = (Button)findViewById(R.id.button_converter);
         enter_et = (EditText)findViewById(R.id.enter_number);
         spinner_currency = (Spinner)findViewById(R.id.spinner_currency);
@@ -87,9 +92,13 @@ public class MainActivity extends Activity {
     }
 
     public void btnConverter(View v){
-        usd.setText("Waite...");
-        eur.setText("Waite...");
-        uan.setText("Waite...");
+        usdAsk.setText("...");
+        eurAsk.setText("...");
+        uanAsk.setText("...");
+        usdBid.setText("...");
+        eurBid.setText("...");
+        uanBid.setText("...");
+
         Log.d(LOG_DEBUG, "onClick btn converter");
 
         String enterValue = enter_et.getText().toString().trim();
@@ -110,35 +119,40 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String[] strings) {
-            double usdValue, eurValue;
+            double usdValue, eurValue, usdBidValue, eurBidValue;
             usdValue = Double.parseDouble(results[0]);
             eurValue = Double.parseDouble(results[1]);
+            usdBidValue = Double.parseDouble(results[2]);
+            eurBidValue = Double.parseDouble(results[3]);
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
             if (usdValue == 0 && eurValue == 0){
                 Toast.makeText(getApplicationContext(), "data update", Toast.LENGTH_SHORT).show();
             }else if (index_arrayCurrencyData == 0){
                // USD to USD
-               usd.setText(""+(inputValue * 1));
+               usdAsk.setText(""+(inputValue * 1));
+               usdBid.setText(""+(inputValue*1));
                 // USD to UAN
-               uan.setText(""+(inputValue * usdValue));
+               uanAsk.setText(""+(inputValue * usdValue));
+               uanBid.setText(""+(inputValue*usdBidValue));
                // USD to EUR
-               eur.setText(""+decimalFormat.format((usdValue/eurValue)*inputValue));
+               eurAsk.setText(""+decimalFormat.format((usdValue/eurValue)*inputValue));
+               eurBid.setText(""+decimalFormat.format((usdBidValue/eurBidValue)*inputValue));
 
            } else if (index_arrayCurrencyData == 1){
                // EUR to USD
-                usd.setText(""+decimalFormat.format((eurValue/usdValue)*inputValue));
+                usdAsk.setText(""+decimalFormat.format((eurValue/usdValue)*inputValue));
                // EUR to EUR
-                eur.setText(""+(inputValue*1));
+                eurAsk.setText(""+(inputValue*1));
                // EUR to UAN
-               uan.setText(""+(eurValue*inputValue));
+               uanAsk.setText(""+(eurValue*inputValue));
            } else if (index_arrayCurrencyData == 2){
                 //UAN to USD
-                usd.setText(""+(decimalFormat.format(inputValue/usdValue)));
+                usdAsk.setText(""+(decimalFormat.format(inputValue/usdValue)));
                 //UAN to EUR
-                eur.setText(""+(decimalFormat.format(inputValue/eurValue)));
+                eurAsk.setText(""+(decimalFormat.format(inputValue/eurValue)));
                 //UAN to UAN
-                uan.setText(""+(inputValue*1));
+                uanAsk.setText(""+(inputValue*1));
            }
             Log.d(LOG_DEBUG, "finish method  onPostExecute");
         }
@@ -154,8 +168,12 @@ public class MainActivity extends Activity {
 
                     JSONObject usdJSON = jsonObject.getJSONObject("usd");
                     JSONObject eurJSON = jsonObject.getJSONObject("eur");
+
                     results[0] = usdJSON.getString("ask");
                     results[1] = eurJSON.getString("ask");
+
+                    results[2] = usdJSON.getString("bid");
+                    results[3] = eurJSON.getString("bid");
 
                     Log.d(LOG_DEBUG, "results " + " usd: "+results[0]+"\n"  +"EUR "+results[1]);
                 } catch (JSONException e){
