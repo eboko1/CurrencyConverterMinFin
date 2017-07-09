@@ -164,7 +164,7 @@ public class MainActivity extends Activity {
                eurBid.setText(""+decimalFormat.format((usdBidValue/eurBidValue)*inputValue));
 
            } else if (index_arrayCurrencyData == 1){
-                date_tv.setText(""+results[0]);
+                date_tv.setText(newDate);
                // EUR to USD
                 usdAsk.setText(""+decimalFormat.format((eurValue/usdValue)*inputValue));
                 usdBid.setText(""+decimalFormat.format((eurBidValue/usdBidValue)*inputValue));
@@ -175,7 +175,7 @@ public class MainActivity extends Activity {
                uanAsk.setText(""+(eurValue*inputValue));
                uanBid.setText(""+(eurBidValue*inputValue));
            } else if (index_arrayCurrencyData == 2){
-                date_tv.setText(""+results[0]);
+                date_tv.setText(newDate);
                 //UAN to USD
                 usdAsk.setText(""+(decimalFormat.format(inputValue/usdValue)));
                 usdBid.setText(""+(decimalFormat.format(inputValue/usdBidValue)));
