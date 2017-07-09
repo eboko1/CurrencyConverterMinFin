@@ -36,12 +36,20 @@ import java.util.Date;
 
 public class MainActivity extends Activity {
     private static final String LOG_DEBUG = "MainActivity" ;
+    private static final String USD_KEY = "usd";
+    private static final String EUR_KEY = "eur";
+    private static final String USDBID_KEY = "usdbid";
+    private static final String EURBID_KEY = "eurbid";
     private TextView usdAsk, eurAsk, uanAsk, usdBid, eurBid, uanBid, date_tv;
     private Button converter;
     private EditText enter_et;
     private Spinner spinner_currency;
     private int index_arrayCurrencyData;
     private double inputValue;
+    double usdValue = 0;
+    double eurValue = 0;
+    double usdBidValue = 0;
+    double eurBidValue = 0;
 
     String[] currencyData = {"USD", "EUR", "UAN"};
     String[] results = new String[10];
@@ -54,7 +62,23 @@ public class MainActivity extends Activity {
         Log.d(LOG_DEBUG, "onCreate");
         init();
         bindDataSpinner();
+        if (savedInstanceState != null){
+            usdValue = savedInstanceState.getDouble(USD_KEY);
+            eurValue = savedInstanceState.getDouble(EUR_KEY);
+            eurBidValue = savedInstanceState.getDouble(EURBID_KEY);
+            usdBidValue = savedInstanceState.getDouble(USDBID_KEY);
+        } else {
+            Log.i("BUNDLE","null");
+        }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putDouble(USD_KEY, usdValue);
+        outState.putDouble(EUR_KEY, eurValue);
+        outState.putDouble(USDBID_KEY, usdBidValue);
+        outState.putDouble(EURBID_KEY, eurBidValue);
     }
 
     private void init(){
@@ -127,7 +151,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String[] strings) {
-            double usdValue, eurValue, usdBidValue, eurBidValue;
+
             usdValue = Double.parseDouble(results[5]);
             eurValue = Double.parseDouble(results[2]);
 
@@ -154,7 +178,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "data update", Toast.LENGTH_SHORT).show();
             }else if (index_arrayCurrencyData == 0){
                 date_tv.setText(newDate);
-               // USD to USD
+                // USD to USD
                usdAsk.setText(""+(inputValue * 1));
                usdBid.setText(""+(inputValue*1));
                 // USD to UAN
