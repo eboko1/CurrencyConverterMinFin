@@ -20,6 +20,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,10 +29,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class MainActivity extends Activity {
     private static final String LOG_DEBUG = "MainActivity" ;
-    private TextView usdAsk, eurAsk, uanAsk, usdBid, eurBid,uanBid;
+    private TextView usdAsk, eurAsk, uanAsk, usdBid, eurBid, uanBid, date_tv;
     private Button converter;
     private EditText enter_et;
     private Spinner spinner_currency;
@@ -60,6 +65,8 @@ public class MainActivity extends Activity {
         usdBid =(TextView)findViewById(R.id.usd_bid_tv);
         eurBid =(TextView)findViewById(R.id.eur_bid_tv);
         uanBid =(TextView)findViewById(R.id.uan_bid_tv);
+
+        date_tv =(TextView)findViewById(R.id.date);
 
         converter = (Button)findViewById(R.id.button_converter);
         enter_et = (EditText)findViewById(R.id.enter_number);
@@ -92,6 +99,7 @@ public class MainActivity extends Activity {
     }
 
     public void btnConverter(View v){
+        date_tv.setText("...");
         usdAsk.setText("...");
         eurAsk.setText("...");
         uanAsk.setText("...");
@@ -120,30 +128,45 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(String[] strings) {
             double usdValue, eurValue, usdBidValue, eurBidValue;
-            usdValue = Double.parseDouble(results[0]);
-            eurValue = Double.parseDouble(results[1]);
-            usdBidValue = Double.parseDouble(results[2]);
+            usdValue = Double.parseDouble(results[5]);
+            eurValue = Double.parseDouble(results[2]);
+
+            usdBidValue = Double.parseDouble(results[6]);
             eurBidValue = Double.parseDouble(results[3]);
+
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-            if (usdValue == 0 && eurValue == 0){
+            // format date
+            String dateString = results[0].toString();
+            String newDate = null;
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                Date oldDate = dateFormat.parse(dateString);
+
+                SimpleDateFormat newDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss ");
+                newDate = newDateFormat.format(oldDate);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (usdValue == 0 && eurValue == 0  ){
                 Toast.makeText(getApplicationContext(), "data update", Toast.LENGTH_SHORT).show();
             }else if (index_arrayCurrencyData == 0){
+                date_tv.setText(newDate);
                // USD to USD
                usdAsk.setText(""+(inputValue * 1));
                usdBid.setText(""+(inputValue*1));
                 // USD to UAN
-               uanAsk.setText(""+(inputValue * usdValue));
-               uanBid.setText(""+(inputValue*usdBidValue));
+               uanAsk.setText(""+(inputValue * usdValue));uanBid.setText(""+(inputValue*usdBidValue));
                // USD to EUR
                eurAsk.setText(""+decimalFormat.format((usdValue/eurValue)*inputValue));
                eurBid.setText(""+decimalFormat.format((usdBidValue/eurBidValue)*inputValue));
 
            } else if (index_arrayCurrencyData == 1){
+                date_tv.setText(""+results[0]);
                // EUR to USD
-                //ask
                 usdAsk.setText(""+decimalFormat.format((eurValue/usdValue)*inputValue));
-                // bid
                 usdBid.setText(""+decimalFormat.format((eurBidValue/usdBidValue)*inputValue));
                // EUR to EUR
                 eurAsk.setText(""+(inputValue*1));
@@ -152,10 +175,13 @@ public class MainActivity extends Activity {
                uanAsk.setText(""+(eurValue*inputValue));
                uanBid.setText(""+(eurBidValue*inputValue));
            } else if (index_arrayCurrencyData == 2){
+                date_tv.setText(""+results[0]);
                 //UAN to USD
                 usdAsk.setText(""+(decimalFormat.format(inputValue/usdValue)));
+                usdBid.setText(""+(decimalFormat.format(inputValue/usdBidValue)));
                 //UAN to EUR
                 eurAsk.setText(""+(decimalFormat.format(inputValue/eurValue)));
+                eurBid.setText(""+(decimalFormat.format(inputValue/eurBidValue)));
                 //UAN to UAN
                 uanAsk.setText(""+(inputValue*1));
                 uanBid.setText(""+(inputValue*1));
@@ -167,10 +193,24 @@ public class MainActivity extends Activity {
         protected String[] doInBackground(String... params) {
             Log.d(LOG_DEBUG, "start method  doInBackground");
                 String uRl;
-                try {
-                    uRl = getJson("http://api.minfin.com.ua/nbu/b03af6a10c910fb83692634f77f046021a210bcf");
+                try { //for mbank
+                    uRl = getJson("http://api.minfin.com.ua/mb/b03af6a10c910fb83692634f77f046021a210bcf");
+                    JSONArray jsonArray = new JSONArray(uRl);
+                     JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
+                    results[0] = jsonObjectEur.getString("date");
+                    results[1] = jsonObjectEur.getString("currency");
+                    results[2] = jsonObjectEur.getString("ask");
+                    results[3] = jsonObjectEur.getString("bid");
 
-                    JSONObject jsonObject = new JSONObject(uRl);
+                    JSONObject jsonObjectUSD = jsonArray.getJSONObject(2);
+                    results[4] = jsonObjectUSD.getString("currency");
+                    results[5] = jsonObjectUSD.getString("ask");
+                    results[6] = jsonObjectUSD.getString("bid");
+
+
+                   /* //for summary
+                    uRl = getJson("http://api.minfin.com.ua/summary/b03af6a10c910fb83692634f77f046021a210bcf");
+                   JSONObject jsonObject = new JSONObject(uRl);
 
                     JSONObject usdJSON = jsonObject.getJSONObject("usd");
                     JSONObject eurJSON = jsonObject.getJSONObject("eur");
@@ -180,8 +220,10 @@ public class MainActivity extends Activity {
 
                     results[2] = usdJSON.getString("bid");
                     results[3] = eurJSON.getString("bid");
-
-                    Log.d(LOG_DEBUG, "results " + " usd: "+results[0]+"\n"  +"EUR "+results[1]);
+*/
+                    Log.d(LOG_DEBUG, "results " + "date: "+results[0]+"\n"
+                            +"currency: "+results[1] + " ask: "+results[2] +", bid: "+results[3]+"\n"
+                            +"currency: "+results[4] + " ask: "+results[5] +", bid: "+results[6]);
                 } catch (JSONException e){
                     e.printStackTrace();
                 } catch (IOException e) {
