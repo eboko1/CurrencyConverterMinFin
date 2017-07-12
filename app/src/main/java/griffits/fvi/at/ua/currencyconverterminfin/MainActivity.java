@@ -46,14 +46,14 @@ public class MainActivity extends Activity {
     private Spinner spinner_currency;
     private int index_arrayCurrencyData;
     private double inputValue;
+
+
+    String[] currencyData = {"USD", "EUR", "UAN"};
+    String[] results = new String[10];
     double usdValue = 0;
     double eurValue = 0;
     double usdBidValue = 0;
     double eurBidValue = 0;
-
-    String[] currencyData = {"USD", "EUR", "UAN"};
-    String[] results = new String[10];
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
