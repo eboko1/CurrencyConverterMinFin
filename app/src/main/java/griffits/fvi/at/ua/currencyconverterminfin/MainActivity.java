@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
     private static final String EURBID_KEY = "eurbid";
     private TextView usdAsk, eurAsk, uanAsk, usdBid, eurBid, uanBid, date_tv;
     private Button converter;
+    private ProgressBar progressBar;
     private EditText enter_et;
     private Spinner spinner_currency;
     private int index_arrayCurrencyData;
@@ -95,6 +97,7 @@ public class MainActivity extends Activity {
         converter = (Button)findViewById(R.id.button_converter);
         enter_et = (EditText)findViewById(R.id.enter_number);
         spinner_currency = (Spinner)findViewById(R.id.spinner_currency);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
         Log.d(LOG_DEBUG, "init");
     }
 
