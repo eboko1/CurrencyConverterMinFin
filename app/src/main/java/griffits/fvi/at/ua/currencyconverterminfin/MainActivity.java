@@ -1,10 +1,13 @@
 package griffits.fvi.at.ua.currencyconverterminfin;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -144,12 +147,18 @@ public class MainActivity extends Activity {
             Log.d(LOG_DEBUG, "start calculate ");
         }
     }
+    public void checkNetworkStatus(){
+        final ConnectivityManager connectivityManager = (ConnectivityManager)
+                this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    public class calculate extends AsyncTask<String, String, String[]>{
+    }
+    public class calculate extends AsyncTask<String, Integer, String[]>{
+        int progressStatus;
         @Override
         protected void onPreExecute() {
+            progressStatus = 0;
             super.onPreExecute();
-            Log.d(LOG_DEBUG, "start method  onPreExecute");
+            Log.d(LOG_DEBUG, "start method  onPreExecute\n" +" progressStatus = "+progressStatus);
         }
 
         @Override
@@ -179,13 +188,14 @@ public class MainActivity extends Activity {
 
             if (usdValue == 0 && eurValue == 0  ){
                 Toast.makeText(getApplicationContext(), "data update", Toast.LENGTH_SHORT).show();
-            }else if (index_arrayCurrencyData == 0){
+            } else if (index_arrayCurrencyData == 0){
                 date_tv.setText(newDate);
                 // USD to USD
                usdAsk.setText(""+(inputValue * 1));
                usdBid.setText(""+(inputValue*1));
                 // USD to UAN
-               uanAsk.setText(""+(inputValue * usdValue));uanBid.setText(""+(inputValue*usdBidValue));
+               uanAsk.setText(""+(inputValue * usdValue));
+               uanBid.setText(""+(inputValue*usdBidValue));
                // USD to EUR
                eurAsk.setText(""+decimalFormat.format((usdValue/eurValue)*inputValue));
                eurBid.setText(""+decimalFormat.format((usdBidValue/eurBidValue)*inputValue));
@@ -216,14 +226,25 @@ public class MainActivity extends Activity {
             Log.d(LOG_DEBUG, "finish method  onPostExecute");
         }
 
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+
+                progressBar.setProgress(values[0]);
+
+            Log.d(LOG_DEBUG, "finish method  onProgressUpdate values[0] = "+values[0]);
+        }
+
         @Override
         protected String[] doInBackground(String... params) {
             Log.d(LOG_DEBUG, "start method  doInBackground");
                 String uRl;
+
                 try { //for mbank
                     uRl = getJson("http://api.minfin.com.ua/mb/b03af6a10c910fb83692634f77f046021a210bcf");
                     JSONArray jsonArray = new JSONArray(uRl);
-                     JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
+                    JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
                     results[0] = jsonObjectEur.getString("date");
                     results[1] = jsonObjectEur.getString("currency");
                     results[2] = jsonObjectEur.getString("ask");
@@ -248,18 +269,18 @@ public class MainActivity extends Activity {
                     results[2] = usdJSON.getString("bid");
                     results[3] = eurJSON.getString("bid");
 */
-                    Log.d(LOG_DEBUG, "results " + "date: "+results[0]+"\n"
-                            +"currency: "+results[1] + " ask: "+results[2] +", bid: "+results[3]+"\n"
-                            +"currency: "+results[4] + " ask: "+results[5] +", bid: "+results[6]);
-                } catch (JSONException e){
+                    Log.d(LOG_DEBUG, "results " + "date: " + results[0] + "\n"
+                            + "currency: " + results[1] + " ask: " + results[2] + ", bid: " + results[3] + "\n"
+                            + "currency: " + results[4] + " ask: " + results[5] + ", bid: " + results[6]);
+                } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             return results;
         }
     }
+
 
 
     public String getJson(String url) throws ClientProtocolException,IOException {
