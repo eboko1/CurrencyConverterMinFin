@@ -1,18 +1,14 @@
 package griffits.fvi.at.ua.currencyconverterminfin;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.webkit.ConsoleMessage;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -55,35 +51,13 @@ public class MainActivity extends Activity {
 
     String[] currencyData = {"USD", "EUR", "UAN"};
     String[] results = new String[10];
-    double usdValue = 0;
-    double eurValue = 0;
-    double usdBidValue = 0;
-    double eurBidValue = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(LOG_DEBUG, "onCreate");
         init();
         bindDataSpinner();
-        if (savedInstanceState != null){
-            usdValue = savedInstanceState.getDouble(USD_KEY);
-            eurValue = savedInstanceState.getDouble(EUR_KEY);
-            eurBidValue = savedInstanceState.getDouble(EURBID_KEY);
-            usdBidValue = savedInstanceState.getDouble(USDBID_KEY);
-        } else {
-            Log.i("BUNDLE","null");
-        }
-
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putDouble(USD_KEY, usdValue);
-        outState.putDouble(EUR_KEY, eurValue);
-        outState.putDouble(USDBID_KEY, usdBidValue);
-        outState.putDouble(EURBID_KEY, eurBidValue);
     }
 
     private void init(){
@@ -147,11 +121,9 @@ public class MainActivity extends Activity {
             Log.d(LOG_DEBUG, "start calculate ");
         }
     }
-    public void checkNetworkStatus(){
-        final ConnectivityManager connectivityManager = (ConnectivityManager)
-                this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    }
+
+
     public class calculate extends AsyncTask<String, Integer, String[]>{
         int progressStatus;
         @Override
@@ -163,10 +135,10 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String[] strings) {
+            double usdValue, eurValue, usdBidValue, eurBidValue;
 
             usdValue = Double.parseDouble(results[5]);
             eurValue = Double.parseDouble(results[2]);
-
             usdBidValue = Double.parseDouble(results[6]);
             eurBidValue = Double.parseDouble(results[3]);
 
@@ -242,18 +214,29 @@ public class MainActivity extends Activity {
                 String uRl;
 
                 try { //for mbank
-                    uRl = getJson("http://api.minfin.com.ua/mb/b03af6a10c910fb83692634f77f046021a210bcf");
-                    JSONArray jsonArray = new JSONArray(uRl);
-                    JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
-                    results[0] = jsonObjectEur.getString("date");
-                    results[1] = jsonObjectEur.getString("currency");
-                    results[2] = jsonObjectEur.getString("ask");
-                    results[3] = jsonObjectEur.getString("bid");
+                  //  final ConnectivityManager connectivityManager = (ConnectivityManager)
+                 //           getSystemService(Context.CONNECTIVITY_SERVICE);
+                 //   final NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                 //   final NetworkInfo mobile  = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+               //     if(wifi.isAvailable() || mobile.isAvailable()){
+                        uRl = getJson("http://api.minfin.com.ua/mb/b03af6a10c910fb83692634f77f046021a210bcf");
+                        JSONArray jsonArray = new JSONArray(uRl);
+                        JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
+                        results[0] = jsonObjectEur.getString("date");
+                        results[1] = jsonObjectEur.getString("currency");
+                        results[2] = jsonObjectEur.getString("ask");
+                        results[3] = jsonObjectEur.getString("bid");
 
-                    JSONObject jsonObjectUSD = jsonArray.getJSONObject(2);
-                    results[4] = jsonObjectUSD.getString("currency");
-                    results[5] = jsonObjectUSD.getString("ask");
-                    results[6] = jsonObjectUSD.getString("bid");
+                        JSONObject jsonObjectUSD = jsonArray.getJSONObject(2);
+                        results[4] = jsonObjectUSD.getString("currency");
+                        results[5] = jsonObjectUSD.getString("ask");
+                        results[6] = jsonObjectUSD.getString("bid");
+              //      } else {
+                  //      Toast.makeText(MainActivity.this,"is no Wi-Fi connection", Toast.LENGTH_LONG).show();
+                 //   }
+
+
+
 
 
                    /* //for summary
@@ -280,8 +263,6 @@ public class MainActivity extends Activity {
             return results;
         }
     }
-
-
 
     public String getJson(String url) throws ClientProtocolException,IOException {
         StringBuilder builder = new StringBuilder();
