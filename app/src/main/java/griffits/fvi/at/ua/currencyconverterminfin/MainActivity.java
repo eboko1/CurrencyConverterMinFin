@@ -125,12 +125,12 @@ public class MainActivity extends Activity {
 
 
     public class calculate extends AsyncTask<String, Integer, String[]>{
-        int progressStatus;
+
         @Override
         protected void onPreExecute() {
-            progressStatus = 0;
+           progressBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
-            Log.d(LOG_DEBUG, "start method  onPreExecute\n" +" progressStatus = "+progressStatus);
+            Log.d(LOG_DEBUG, "start method  onPreExecute\n" +" progressStatus = ");
         }
 
         @Override
@@ -195,6 +195,7 @@ public class MainActivity extends Activity {
                 uanAsk.setText(""+(inputValue*1));
                 uanBid.setText(""+(inputValue*1));
            }
+           progressBar.setVisibility(View.INVISIBLE);
             Log.d(LOG_DEBUG, "finish method  onPostExecute");
         }
 
@@ -213,12 +214,7 @@ public class MainActivity extends Activity {
             Log.d(LOG_DEBUG, "start method  doInBackground");
                 String uRl;
 
-                try { //for mbank
-                  //  final ConnectivityManager connectivityManager = (ConnectivityManager)
-                 //           getSystemService(Context.CONNECTIVITY_SERVICE);
-                 //   final NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                 //   final NetworkInfo mobile  = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-               //     if(wifi.isAvailable() || mobile.isAvailable()){
+                try {
                         uRl = getJson("http://api.minfin.com.ua/mb/b03af6a10c910fb83692634f77f046021a210bcf");
                         JSONArray jsonArray = new JSONArray(uRl);
                         JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
@@ -231,13 +227,6 @@ public class MainActivity extends Activity {
                         results[4] = jsonObjectUSD.getString("currency");
                         results[5] = jsonObjectUSD.getString("ask");
                         results[6] = jsonObjectUSD.getString("bid");
-              //      } else {
-                  //      Toast.makeText(MainActivity.this,"is no Wi-Fi connection", Toast.LENGTH_LONG).show();
-                 //   }
-
-
-
-
 
                    /* //for summary
                     uRl = getJson("http://api.minfin.com.ua/summary/b03af6a10c910fb83692634f77f046021a210bcf");
