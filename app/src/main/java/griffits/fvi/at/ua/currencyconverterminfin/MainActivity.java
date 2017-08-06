@@ -33,6 +33,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import griffits.fvi.at.ua.currencyconverterminfin.utils.NetworkStatusChecker;
+
 
 public class MainActivity extends Activity {
     private static final String LOG_DEBUG = "MainActivity" ;
@@ -103,6 +105,8 @@ public class MainActivity extends Activity {
     }
 
     public void btnConverter(View v){
+        Log.d(LOG_DEBUG, "onClick btn converter");
+
         date_tv.setText("...");
         usdAsk.setText("...");
         eurAsk.setText("...");
@@ -111,13 +115,11 @@ public class MainActivity extends Activity {
         eurBid.setText("...");
         uanBid.setText("...");
 
-        Log.d(LOG_DEBUG, "onClick btn converter");
-
         String enterValue = enter_et.getText().toString().trim();
-        if (enterValue.length() > 0 ){  //&& enterValue.equals(".")
+        if (enterValue.length() > 0 && NetworkStatusChecker.isNetworkAvailable(this) ){  //&& enterValue.equals(".")
             inputValue = Double.parseDouble(enterValue);
             Log.d(LOG_DEBUG, "btn converter input value = " + inputValue);
-           new calculate().execute();
+            new calculate().execute();
             Log.d(LOG_DEBUG, "start calculate ");
         }
     }
@@ -128,13 +130,15 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-           progressBar.setVisibility(View.VISIBLE);
+          progressBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
-            Log.d(LOG_DEBUG, "start method  onPreExecute\n" +" progressStatus = ");
+            Log.d(LOG_DEBUG, "start method  onPreExecute");
         }
 
         @Override
         protected void onPostExecute(String[] strings) {
+            progressBar.setVisibility(View.INVISIBLE);
+
             double usdValue, eurValue, usdBidValue, eurBidValue;
 
             usdValue = Double.parseDouble(results[5]);
@@ -150,10 +154,8 @@ public class MainActivity extends Activity {
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 Date oldDate = dateFormat.parse(dateString);
-
                 SimpleDateFormat newDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss ");
                 newDate = newDateFormat.format(oldDate);
-
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -195,19 +197,10 @@ public class MainActivity extends Activity {
                 uanAsk.setText(""+(inputValue*1));
                 uanBid.setText(""+(inputValue*1));
            }
-           progressBar.setVisibility(View.INVISIBLE);
             Log.d(LOG_DEBUG, "finish method  onPostExecute");
         }
 
 
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-
-                progressBar.setProgress(values[0]);
-
-            Log.d(LOG_DEBUG, "finish method  onProgressUpdate values[0] = "+values[0]);
-        }
 
         @Override
         protected String[] doInBackground(String... params) {
@@ -215,18 +208,19 @@ public class MainActivity extends Activity {
                 String uRl;
 
                 try {
-                        uRl = getJson("http://api.minfin.com.ua/mb/b03af6a10c910fb83692634f77f046021a210bcf");
-                        JSONArray jsonArray = new JSONArray(uRl);
-                        JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
-                        results[0] = jsonObjectEur.getString("date");
-                        results[1] = jsonObjectEur.getString("currency");
-                        results[2] = jsonObjectEur.getString("ask");
-                        results[3] = jsonObjectEur.getString("bid");
+                    uRl = getJson("http://api.minfin.com.ua/mb/b03af6a10c910fb83692634f77f046021a210bcf");
+                    JSONArray jsonArray = new JSONArray(uRl);
+                    JSONObject jsonObjectEur = jsonArray.getJSONObject(1);
 
-                        JSONObject jsonObjectUSD = jsonArray.getJSONObject(2);
-                        results[4] = jsonObjectUSD.getString("currency");
-                        results[5] = jsonObjectUSD.getString("ask");
-                        results[6] = jsonObjectUSD.getString("bid");
+                    results[0] = jsonObjectEur.getString("date");
+                    results[1] = jsonObjectEur.getString("currency");
+                    results[2] = jsonObjectEur.getString("ask");
+                    results[3] = jsonObjectEur.getString("bid");
+
+                    JSONObject jsonObjectUSD = jsonArray.getJSONObject(2);
+                    results[4] = jsonObjectUSD.getString("currency");
+                    results[5] = jsonObjectUSD.getString("ask");
+                    results[6] = jsonObjectUSD.getString("bid");
 
                    /* //for summary
                     uRl = getJson("http://api.minfin.com.ua/summary/b03af6a10c910fb83692634f77f046021a210bcf");
@@ -249,7 +243,7 @@ public class MainActivity extends Activity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            return results;
+         return results;
         }
     }
 
@@ -261,11 +255,11 @@ public class MainActivity extends Activity {
         HttpEntity entity = response.getEntity();
         InputStream content = entity.getContent();
         BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+
         String con;
         while ((con = reader.readLine())!= null){
             builder.append(con);
         }
-
         return builder.toString();
     }
 }
